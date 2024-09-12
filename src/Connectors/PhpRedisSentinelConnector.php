@@ -54,9 +54,23 @@ class PhpRedisSentinelConnector extends PhpRedisConnector
     {
         $service = $config['sentinel_service'] ?? 'mymaster';
 
-        $sentinel = $this->connectToSentinel($config);
+        $hosts = explode(',', $config['sentinel_hosts']) ?? [$config['sentinel_host'] . ':' . $config['sentinel_port']];
+        $master = null;
+        foreach ($hosts as $item) {
+            [$host, $port] = explode(':', $item);
+            $config['sentinel_host'] = $host;
+            $config['sentinel_port'] = $port;
 
-        $master = $sentinel->master($service);
+            try {
+                $sentinel = $this->connectToSentinel($config);
+
+                $master = $sentinel->master($service);
+            } catch (RedisException $e) {
+                if (!stristr($e->getMessage(), 'went away')) {
+                    throw $e;
+                }
+            }
+        }
 
         if (! $this->isValidMaster($master)) {
             throw new RedisException(sprintf("No master found for service '%s'.", $service));
