@@ -10,8 +10,7 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=namoshek_laravel-redis-sentinel&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=namoshek_laravel-redis-sentinel)
 [![License](https://poser.pugx.org/namoshek/laravel-redis-sentinel/license)](https://packagist.org/packages/namoshek/laravel-redis-sentinel)
 
-This package provides a Laravel Redis driver which allows connecting to a Redis master through a Redis Sentinel instance.
-The package is intended to be used in a Kubernetes environment or similar, where connecting to Redis Sentinels is possible through a load balancer.
+This package provides a Laravel Redis driver which allows connecting to a Redis master through several Redis Sentinel instances.
 
 This driver is an alternative to [`monospice/laravel-redis-sentinel-drivers`](https://github.com/monospice/laravel-redis-sentinel-drivers).
 The primary difference is that this driver supports the [`phpredis/phpredis` PHP extension](https://github.com/phpredis/phpredis)
@@ -47,8 +46,7 @@ To use the Redis Sentinel driver, the `redis` section in `config/database.php` n
     'client' => env('REDIS_CLIENT', 'phpredis-sentinel'),
 
     'default' => [
-        'sentinel_host' => env('REDIS_SENTINEL_HOST', '127.0.0.1'),
-        'sentinel_port' => env('REDIS_SENTINEL_PORT', 26379),
+        'sentinel_hosts' => env('REDIS_SENTINEL_HOSTS', '127.0.0.1:26379'),
         'sentinel_service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
         'sentinel_timeout' => env('REDIS_SENTINEL_TIMEOUT', 0),
         'sentinel_persistent' => env('REDIS_SENTINEL_PERSISTENT'),
