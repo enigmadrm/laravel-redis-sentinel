@@ -57,7 +57,7 @@ class PhpRedisSentinelConnector extends PhpRedisConnector
         $hosts = explode(',', $config['sentinel_hosts']) ?? [$config['sentinel_host'] . ':' . $config['sentinel_port']];
         $master = null;
         foreach ($hosts as $item) {
-            [$host, $port] = explode(':', $item);
+            [$host, $port] = explode(':', trim($item));
             $config['sentinel_host'] = $host;
             $config['sentinel_port'] = $port;
 
