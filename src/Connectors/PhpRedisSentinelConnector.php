@@ -65,6 +65,8 @@ class PhpRedisSentinelConnector extends PhpRedisConnector
                 $sentinel = $this->connectToSentinel($config);
 
                 $master = $sentinel->master($service);
+
+                break;
             } catch (RedisException $e) {
                 if (!stristr($e->getMessage(), 'went away')) {
                     throw $e;
