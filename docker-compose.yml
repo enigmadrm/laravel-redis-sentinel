@@ -1,0 +1,17 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: laravel-redis-sentinel
+    volumes:
+      - .:/data
+    ports:
+      - "6381:6381"
+      - "6382:6382"
+      - "6383:6383"
+      - "6384:6384"
+      - "6385:6385"
+      - "6386:6386"
+      - "26379:26379"
+      - "26380:26380"
+      - "26381:26381"
+    command: /data/start-redis-cluster.sh

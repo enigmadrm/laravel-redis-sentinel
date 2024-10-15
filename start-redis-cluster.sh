@@ -49,8 +49,8 @@ if [ -z "$REDIS_GROUP_1" ] && [ -z "$REDIS_GROUP_2" ] \
     && [ -z "$REDIS_GROUP_7" ] && [ -z "$REDIS_GROUP_8" ] \
     && [ -z "$REDIS_GROUP_9" ]
 then
-    REDIS_GROUP_1='service1 6379-6381'
-    REDIS_GROUP_2='service2 6382-6384'
+    REDIS_GROUP_1='service1 6381-6383'
+    REDIS_GROUP_2='service2 6384-6386'
 fi
 
 if [ "$*" = 'config' ]; then

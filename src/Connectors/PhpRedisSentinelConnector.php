@@ -54,7 +54,7 @@ class PhpRedisSentinelConnector extends PhpRedisConnector
     {
         $service = $config['sentinel_service'] ?? 'mymaster';
 
-        $hosts = explode(',', $config['sentinel_hosts']) ?? [$config['sentinel_host'] . ':' . $config['sentinel_port']];
+        $hosts = explode(',', $config['sentinel_hosts']) ?? [$config['sentinel_host'].':'.$config['sentinel_port']];
         $master = null;
         foreach ($hosts as $item) {
             [$host, $port] = explode(':', trim($item));
@@ -68,7 +68,7 @@ class PhpRedisSentinelConnector extends PhpRedisConnector
 
                 break;
             } catch (RedisException $e) {
-                if (!stristr($e->getMessage(), 'went away')) {
+                if (! stristr($e->getMessage(), 'went away')) {
                     throw $e;
                 }
             }
