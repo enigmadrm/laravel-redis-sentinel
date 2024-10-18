@@ -55,8 +55,9 @@ class PhpRedisSentinelConnector extends PhpRedisConnector
         $service = $config['sentinel_service'] ?? 'mymaster';
 
         $hosts = explode(',', $config['sentinel_hosts']) ?? [$config['sentinel_host'].':'.$config['sentinel_port']];
-        $master = null;
+        shuffle($hosts);
         foreach ($hosts as $item) {
+            $master = null;
             [$host, $port] = explode(':', trim($item));
             $config['sentinel_host'] = $host;
             $config['sentinel_port'] = $port;
@@ -65,23 +66,30 @@ class PhpRedisSentinelConnector extends PhpRedisConnector
                 $sentinel = $this->connectToSentinel($config);
 
                 $master = $sentinel->master($service);
-
-                break;
             } catch (RedisException $e) {
-                if (! stristr($e->getMessage(), 'went away')) {
-                    throw $e;
-                }
+                continue;
             }
+
+            if (! $this->isValidMaster($master)) {
+                continue;
+            }
+
+            $client = parent::createClient(array_merge($config, [
+                'host' => $master['ip'],
+                'port' => $master['port'],
+            ]));
+
+            $role = $client->role();
+            if (is_array($role) && $role[0] == 'master') {
+                return $client;
+            }
+
+            $client = null;
+
+            break;
         }
 
-        if (! $this->isValidMaster($master)) {
-            throw new RedisException(sprintf("No master found for service '%s'.", $service));
-        }
-
-        return parent::createClient(array_merge($config, [
-            'host' => $master['ip'],
-            'port' => $master['port'],
-        ]));
+        throw new RedisException(sprintf("No master found for service '%s'.", $service));
     }
 
     /**

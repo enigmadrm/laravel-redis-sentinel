@@ -33,7 +33,7 @@
 #
 
 WORKDIR="${WORKDIR:-./cluster}"
-BIND_ADDRESS="${BIND_ADDRESS:-127.0.0.1}"
+BIND_ADDRESS="${BIND_ADDRESS:-0.0.0.0}"
 SENTINEL_PORTS="${SENTINEL_PORTS:-26379-26381}"
 DOWN_AFTER="${DOWN_AFTER-3000}"
 FAILOVER_TIMEOUT="${FAILOVER_TIMEOUT-10000}"
@@ -164,6 +164,7 @@ start_redis() {
 
     set -- --port "$2" \
         --daemonize yes \
+        --protected-mode no \
         --bind $BIND_ADDRESS \
         --dir "$WORKDIR" \
         --pidfile "redis-$2.pid" \

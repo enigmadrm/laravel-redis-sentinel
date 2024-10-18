@@ -1,6 +1,8 @@
 services:
   redis:
-    image: redis:latest
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
     container_name: laravel-redis-sentinel
     volumes:
       - .:/data
